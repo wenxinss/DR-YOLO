@@ -1,0 +1,5 @@
+test : /home8T/swx/yolov7/datasets/RTTS_fog/RTTTest/Test_test.txt  # RTTs
+
+nc : 5
+
+names : ['person','car','bus','bicycle','motorbike']

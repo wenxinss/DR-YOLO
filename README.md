@@ -29,4 +29,4 @@ http://host.robots.ox.ac.uk/pascal/VOC/voc2007/
 
 https://pan.baidu.com/s/1LasrDnfKE-wY5IuV_FG_QQ?pwd=ssss 
 
-    python test.py --data "RTTs.txt"  --weights "best.pt"
+    python test.py --data "data/voc_fog.yaml"  --weights "best.pt"

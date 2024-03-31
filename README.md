@@ -30,3 +30,7 @@ http://host.robots.ox.ac.uk/pascal/VOC/voc2007/
 https://pan.baidu.com/s/1LasrDnfKE-wY5IuV_FG_QQ?pwd=ssss 
 
     python test.py --data "data/voc_fog.yaml"  --weights "best.pt"
+
+# Train
+
+The training data and code will also be publicly available soon. Thank you.

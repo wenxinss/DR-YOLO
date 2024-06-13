@@ -11,10 +11,6 @@ https://sites.google.com/view/reside-dehaze-datasets
       cd datasets
       python voc_RTTS.py
 
-or you can download RTTs we have translated here:
-
-https://drive.google.com/drive/folders/1O0d9Efyz1gBA3n3RXOSmR2EDRFK_1Gse?usp=drive_link
-
 ### VF-test：please download it here:
 
 https://github.com/wenyyu/Image-Adaptive-YOLO

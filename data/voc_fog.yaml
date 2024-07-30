@@ -1,9 +1,9 @@
 train : datasets/VOC_fog/train.txt
 val : datasets/VOC_fog/val.txt
 clean: datasets/VOC_fog/clean.txt
-test : /home8T/swx/yolov7/datasets/RTTS_fog/RTTTest/Test_test.txt  # RTTs
-#test : /home8T/swx/yolov7/datasets/VOC_norm/Test/Test_test.txt # norm_test
-#test : /home8T/swx/yolov7/datasets/VOC_fog/VOCTest/Test_test.txt # Fog_test
+test : datasets/RTTS_fog/RTTTest/Test_test.txt  # RTTs
+#test : datasets/VOC_norm/Test/Test_test.txt # norm_test
+#test : datasets/VOC_fog/VOCTest/Test_test.txt # Fog_test
 
 nc : 5
 

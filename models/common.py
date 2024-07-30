@@ -839,11 +839,70 @@ class Mix(nn.Module):
         return out
 
 ################## start of restore decoder ###########################
-class Decoder2(nn.Module): # without the GAL decoder and the TM decoder
+class Decoder2(nn.Module):
     def __init__(self, output_nc):
         super().__init__()
-    def forward(self, x):
-        if not x[0].requires_grad:  # for test
-            return x
+        # Input: 20*20*512
+        # Upsampling
+        # inputsize:512*20*20, outputsize:256*40*40
+        self.conv_1 = nn.Sequential(
+            nn.ConvTranspose2d(512, 256, 3, stride=2, padding=1, output_padding=1),
+            nn.BatchNorm2d(256),
+            nn.SiLU()
+        )
+        # inputsize:256*40*40(concat feat2), outputsize:128*80*80
+        self.conv_2 = nn.Sequential(
+            nn.ConvTranspose2d(512, 128, 3, stride=2, padding=1, output_padding=1),
+            nn.BatchNorm2d(128),
+            nn.SiLU()
+        )
+        # inputsize:128*80*80(concat feat1), outputsize:64*160*160
+        self.conv_3 = nn.Sequential(
+            nn.ConvTranspose2d(256, 64, 3, stride=2, padding=1, output_padding=1),
+            nn.BatchNorm2d(64),
+            nn.SiLU()
+        )
+        self.upsample = nn.Upsample(scale_factor=4, mode='bilinear', align_corners=True)
+
+        # Output layer
+        self.conv_4 = nn.Sequential(
+            nn.ReflectionPad2d(3),
+            nn.Conv2d(64, output_nc, 7),
+            nn.Tanh()
+        )
+
+        self.tx1 = Conv(64, 16, 3, 1, 1)
+        self.tx2 = Conv(16, 1, 3, 1, 1)
+        self.A = nn.Sequential(
+            Conv(512, 3),
+            nn.AdaptiveMaxPool2d(1)
+        )
+
+    def forward(self, featurelist):
+        """Standard forward"""
+        # Decoding
+        # batch size x 256 x 40 x 40
+        c1 = self.conv_1(featurelist[0])
+
+        # batch size x 512 x 40 x 40
+        skip1_de = torch.cat((c1, featurelist[1]), 1)
+
+        # batch size x 128 x 80 x 80
+        c2 = self.conv_2(skip1_de)
+
+        # batch size x 256 x 80 x 80
+        skip2_de = torch.cat((c2, featurelist[2]), 1)
+
+        # batch size x 64 x 160 x 160
+        c3 = self.conv_3(skip2_de)
+
+        # upsample: batch size x 64 x 640 x 640
+        c4 = self.upsample(c3)
+
+        # batch size x 3 x 640 x 640
+        dehaze = self.conv_4(c4)
+        A = self.A(featurelist[0])
+        tx = self.tx2(self.tx1(c4))
+        return [dehaze, A, tx]
 
 

@@ -784,8 +784,7 @@ def parse_model(d, ch):  # model_dict, input_channels(3)
                  RepResX, RepResXCSPA, RepResXCSPB, RepResXCSPC,
                  Ghost, GhostCSPA, GhostCSPB, GhostCSPC,
                  SwinTransformerBlock, STCSPA, STCSPB, STCSPC,
-                 SwinTransformer2Block, ST2CSPA, ST2CSPB, ST2CSPC, DehazeBlock, GetOrImgUp, UP,
-                 GCN1, GCN2, GCN4, GCN5, GraphAttentionNetwork]:
+                 SwinTransformer2Block, ST2CSPA, ST2CSPB, ST2CSPC, GCN5]:
             # f=-1
 
             c1, c2 = ch[f], args[0]

@@ -633,9 +633,20 @@ class Model(nn.Module):
                 print('%10.1f%10.0f%10.1fms %-40s' % (o, m.np, dt[-1], m.type))
 
             m_name = m.type.split('.')[-1]
-
-
-            x = m(x)  # run
+            # if m_name in ['decoderBlock', 'GetOrg', 'myMix']:
+            #     print("ok")
+            if m_name in ['GCN4']:
+                x, gcn_out = m(x)
+            elif m_name in ['feature_fusion']:
+                x = m(x)
+            # elif not m.training and m_name in ['Decoder', 'Decoder2']: # , 'Decoder2'
+            #     pass
+            elif m_name in ['Decoder', 'Decoder2']:
+                x=m(x)
+            else:
+            # if m_name in ['Decoder2']:
+            #     print("ok")
+                x = m(x)  # run
 
             y.append(x if m.i in self.save else None)  # save output
 
@@ -840,6 +851,39 @@ def parse_model(d, ch):  # model_dict, input_channels(3)
             args = [c1, c2]
         elif m in [Mix]:
             c2 = args[1]
+        elif m in [myMix]:
+            c1, c2 = args[0], args[1]
+        elif m is feature_fusion:
+            c2 = args[0]
+        elif m is GetOrg:
+            c2 = args[0]
+        # elif m is SqueezeExcitation:
+        #     c2 = args[0]
+        elif m in [Decoder, SqueezeExcitation, SCSEModule, Decoder2]:
+            c2 = args[0]
+        elif m in [MultiLevelGDIP]:
+            c2 = args[0]
+        elif m in [ScConv]:
+            c2 = args[0]
+        elif m in [FasterNetBlock, FAB, CFGB, FasterNetBlock1]:
+            c1 = ch[-1]
+            c2 = args[0]
+            args = [c1, c2]
+        elif m in [GlobalFeatureUpsample, PyrmidFusionNet]:
+            c1, c2 = args[0], args[1]
+            args = [c1, c2, *args[2:]]
+        elif m in [RBBlockA, decoderBlock]:
+            c2 = args[0]
+            # e.g. '128,1,2;256,1,1' = [[128, 1, 2], [256, 1, 1]]
+            args[1] = [[int(x) for x in arg.split(',')] for arg in args[1].split(';')]
+            args = [[ch[x] for x in f]] + args[:1] + args[1] + args[2:]
+        elif m in [BFMBlockB]:
+            c2 = args[0]
+            # e.g. '128,1,2;256,1,1' = [[128, 1, 2], [256, 1, 1]]
+            args[1] = [[int(x) for x in arg.split(',')] for arg in args[1].split(';')]
+            args = [[ch[x] for x in f]] + args[:1] + args[1]
+        elif m is space_to_depth:
+            c2 = 4 * ch[f]
         else:
             c2 = ch[f]
         # 对当前模块序列化之后的层传递给m_

@@ -18,10 +18,7 @@ from utils.datasets import letterbox
 from utils.general import non_max_suppression, make_divisible, scale_coords, increment_path, xyxy2xywh
 from utils.plots import color_list, plot_one_box
 from utils.torch_utils import time_synchronized
-import torchvision.transforms as transform
-from ML_GCN.util import *
 from torch.nn import Parameter
-# from models.DCNv2.dcn_v2 import DCN
 import torch
 import pickle
 import os

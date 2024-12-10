@@ -784,19 +784,12 @@ def parse_model(d, ch):  # model_dict, input_channels(3)
                  RepResX, RepResXCSPA, RepResXCSPB, RepResXCSPC,
                  Ghost, GhostCSPA, GhostCSPB, GhostCSPC,
                  SwinTransformerBlock, STCSPA, STCSPB, STCSPC,
-                 SwinTransformer2Block, ST2CSPA, ST2CSPB, ST2CSPC, DehazeBlock, GetOrImgUp, UP,
-                 GCN1, GCN2, GCN4, GCN5, GraphAttentionNetwork]:
+                 SwinTransformer2Block, ST2CSPA, ST2CSPB, ST2CSPC, 
+                 GCN5]:
             # f=-1
 
             c1, c2 = ch[f], args[0]
-            # 这里的no不是NO的意思，而是一个变量no = na * (nc + 5)
-            # 只要我的输出通道不是最后一层，我都要给输出通道数变为靠近8的整数倍
-            if c2 != no and m is not GetOrImgUp:  # if not output
-                c2 = make_divisible(c2 * gw, 8)  # 控制宽度的代码（卷积核个数）
 
-            # *arg表示接收任意数量的参数，调用时会将实际参数打入一个元组传入实参
-            # 原始的arg参数进行了解析，并且重新构造了args列表，
-            # 因为原始传入的第一个参数为输出通道数，并非最终的通道数，并且args列表新增c1
             args = [c1, c2, *args[1:]]
             # 判断是否重复几次，可见提供的也就以下几个模块
             if m in [DownC, SPPCSPC, GhostSPPCSPC,

@@ -2368,7 +2368,20 @@ class DEA(nn.Module):
 
 
 ##### end of BackBone ####
+class Mix(nn.Module):
+    def __init__(self, c1, c2):
+        super(Mix, self).__init__()
+        # self.m = 0.80
+        self.FeatureBanlance = torch.nn.Parameter(torch.tensor(0.8), requires_grad=True)
+        # w = torch.nn.Parameter(w, requires_grad=True)
+        # self.w = w
+        self.mix_block = nn.Sigmoid()
+        self.cov = Conv(c1, c2)
 
+    def forward(self, fea_list):
+        mix_factor = self.mix_block(self.FeatureBanlance)
+        out = self.cov(fea_list[0]) * mix_factor + fea_list[1] * (1 - mix_factor)
+        return out
 ####### SE_layer ########
 def _make_divisible(ch, divisor=8, min_ch=None):
     """
